@@ -8,20 +8,42 @@
 import Crypto
 import Foundation
 
-public enum KeyType
+import Datable
+
+public enum KeyType: UInt8
 {
-    case Curve25519KeyAgreement
-    case P521KeyAgreement
-    case P384KeyAgreement
-    case P256KeyAgreement
+    case Curve25519KeyAgreement = 1
+    case P256KeyAgreement = 2
+    case P384KeyAgreement = 3
+    case P521KeyAgreement = 4
 
-    case Curve25519Signing
-    case P521Signing
-    case P384Signing
-    case P256Signing
+    case Curve25519Signing = 5
+    case P256Signing = 6
+    case P384Signing = 7
+    case P521Signing = 8
 
-    case P256SecureEnclaveKeyAgreement
-    case P256SecureEnclaveSigning
+    case P256SecureEnclaveKeyAgreement = 9
+    case P256SecureEnclaveSigning = 10
+}
+
+public extension KeyType
+{
+    init?(_ data: Data)
+    {
+        guard data.count == 1 else
+        {
+            return nil
+        }
+
+        let uint8 = UInt8(data: data)
+
+        self.init(rawValue: uint8)
+    }
+
+    var data: Data
+    {
+        return self.rawValue.data
+    }
 }
 
 public enum PrivateKey
@@ -42,6 +64,24 @@ public enum PrivateKey
 
 extension PrivateKey
 {
+    public init(typedData: Data) throws
+    {
+        guard typedData.count > 1 else
+        {
+            throw KeysError.badTypeData
+        }
+
+        let typeData = typedData[0..<1]
+        let valueData = typedData[1...]
+
+        guard let type = KeyType(typeData) else
+        {
+            throw KeysError.badTypeData
+        }
+
+        try self.init(type: type, data: valueData)
+    }
+
     public init(type: KeyType, data: Data) throws
     {
         switch type
@@ -127,6 +167,17 @@ extension PrivateKey
             case .P256SecureEnclaveSigning:
                 return nil
         }
+    }
+
+    public var typedData: Data?
+    {
+        let typeData = self.type.data
+        guard let valueData = self.data else
+        {
+            return nil
+        }
+
+        return typeData + valueData
     }
 
     public var secureEnclave: Bool
@@ -472,4 +523,5 @@ public enum KeysError: Error
     case keyTypeMismatch(KeyType, KeyType)
     case keyTypeDoesNotSupportKeyAgreement(KeyType)
     case keyTypeDoesNotSupportSigning(KeyType)
+    case badTypeData
 }
