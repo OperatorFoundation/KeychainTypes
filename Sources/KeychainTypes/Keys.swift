@@ -64,6 +64,35 @@ public enum PrivateKey
 
 extension PrivateKey
 {
+    public init(type: KeyType) throws
+    {
+        switch type
+        {
+            case .Curve25519KeyAgreement:
+                self = .Curve25519KeyAgreement(Curve25519.KeyAgreement.PrivateKey())
+            case .P521KeyAgreement:
+                self = .P521KeyAgreement(P521.KeyAgreement.PrivateKey())
+            case .P384KeyAgreement:
+                self = .P384KeyAgreement(P384.KeyAgreement.PrivateKey())
+            case .P256KeyAgreement:
+                self = .P256KeyAgreement(P256.KeyAgreement.PrivateKey())
+
+            case .Curve25519Signing:
+                self = .Curve25519KeyAgreement(Curve25519.KeyAgreement.PrivateKey())
+            case .P521Signing:
+                self = .P521Signing(P521.Signing.PrivateKey())
+            case .P384Signing:
+                self = .P384Signing(P384.Signing.PrivateKey())
+            case .P256Signing:
+                self = .P256Signing(P256.Signing.PrivateKey())
+
+            case .P256SecureEnclaveKeyAgreement:
+                self = .P256SecureEnclaveKeyAgreement(try SecureEnclave.P256.KeyAgreement.PrivateKey())
+            case .P256SecureEnclaveSigning:
+                self = .P256SecureEnclaveSigning(try SecureEnclave.P256.Signing.PrivateKey())
+        }
+    }
+
     public init(typedData: Data) throws
     {
         guard typedData.count > 1 else
