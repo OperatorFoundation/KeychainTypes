@@ -354,6 +354,24 @@ public enum PublicKey
 
 extension PublicKey
 {
+    public init(typedData: Data) throws
+    {
+        guard typedData.count > 1 else
+        {
+            throw KeysError.badTypeData
+        }
+
+        let typeData = typedData[0..<1]
+        let valueData = typedData[1...]
+
+        guard let type = KeyType(typeData) else
+        {
+            throw KeysError.badTypeData
+        }
+
+        try self.init(type: type, data: valueData)
+    }
+
     public init(type: KeyType, data: Data) throws
     {
         switch type
@@ -429,6 +447,17 @@ extension PublicKey
             case .P256Signing(let key):
                 return key.compactRepresentation
         }
+    }
+
+    public var typedData: Data?
+    {
+        let typeData = self.type.data
+        guard let valueData = self.data else
+        {
+            return nil
+        }
+
+        return typeData + valueData
     }
 
     public func isValidSignature<D>(_ signature: Signature, for dataToVerify: D) -> Bool where D : DataProtocol
