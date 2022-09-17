@@ -134,9 +134,9 @@ extension PrivateKey
                 self = .P256Signing(try P256.Signing.PrivateKey(rawRepresentation: data))
 
             case .P256SecureEnclaveKeyAgreement:
-                throw KeysError.cannotMakeSecureEnclaveKeyFromData
+                self = .P256SecureEnclaveKeyAgreement(try SecureEnclave.P256.KeyAgreement.PrivateKey(dataRepresentation: data))
             case .P256SecureEnclaveSigning:
-                throw KeysError.cannotMakeSecureEnclaveKeyFromData
+                self = .P256SecureEnclaveSigning(try SecureEnclave.P256.Signing.PrivateKey(dataRepresentation: data))
         }
     }
 
@@ -191,10 +191,10 @@ extension PrivateKey
             case .P256Signing(let key):
                 return key.rawRepresentation
 
-            case .P256SecureEnclaveKeyAgreement:
-                return nil
-            case .P256SecureEnclaveSigning:
-                return nil
+            case .P256SecureEnclaveKeyAgreement(let key):
+                return key.dataRepresentation
+            case .P256SecureEnclaveSigning(let key):
+                return key.dataRepresentation
         }
     }
 
@@ -424,9 +424,9 @@ extension PublicKey
                 self = .P256Signing(try P256.Signing.PublicKey(compactRepresentation: data))
 
             case .P256SecureEnclaveKeyAgreement:
-                throw KeysError.cannotMakeSecureEnclaveKeyFromData
+                throw KeysError.cannotStorePublicKeysInSecureEnclave
             case .P256SecureEnclaveSigning:
-                throw KeysError.cannotMakeSecureEnclaveKeyFromData
+                throw KeysError.cannotStorePublicKeysInSecureEnclave
         }
     }
 
@@ -575,9 +575,45 @@ public enum Signature
     case P256(P256.Signing.ECDSASignature)
 }
 
+extension PrivateKey: Equatable
+{
+    public static func == (lhs: PrivateKey, rhs: PrivateKey) -> Bool
+    {
+        guard let ldata = lhs.typedData else
+        {
+            return false
+        }
+
+        guard let rdata = rhs.typedData else
+        {
+            return false
+        }
+
+        return ldata == rdata
+    }
+}
+
+extension PublicKey: Equatable
+{
+    public static func == (lhs: PublicKey, rhs: PublicKey) -> Bool
+    {
+        guard let ldata = lhs.typedData else
+        {
+            return false
+        }
+
+        guard let rdata = rhs.typedData else
+        {
+            return false
+        }
+
+        return ldata == rdata
+    }
+}
+
 public enum KeysError: Error
 {
-    case cannotMakeSecureEnclaveKeyFromData
+    case cannotStorePublicKeysInSecureEnclave
     case keyTypeMismatch(KeyType, KeyType)
     case keyTypeDoesNotSupportKeyAgreement(KeyType)
     case keyTypeDoesNotSupportSigning(KeyType)
