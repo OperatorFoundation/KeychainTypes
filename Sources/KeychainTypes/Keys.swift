@@ -10,7 +10,7 @@ import Foundation
 
 import Datable
 
-public enum KeyType: UInt8
+public enum KeyType: UInt8, Codable
 {
     case Curve25519KeyAgreement = 1
     case P256KeyAgreement = 2
@@ -346,7 +346,7 @@ extension PrivateKey
         }
     }
 
-    public func signature<D>(for digest: D) throws -> Signature where D : Digest
+    public func signature<D>(for digest: D) throws -> Signature where D : Crypto.Digest
     {
         switch self
         {
@@ -365,6 +365,73 @@ extension PrivateKey
             default:
                 throw KeysError.keyTypeDoesNotSupportSigning(self.type)
         }
+    }
+
+    public func signature(for digest: Digest) throws -> Signature
+    {
+        let data: Data
+        switch digest
+        {
+            case .SHA256(let hashData):
+                data = hashData
+            case .SHA384(let hashData):
+                data = hashData
+            case .SHA512(let hashData):
+                data = hashData
+        }
+
+        switch self
+        {
+            case .P521Signing(let privateKey):
+                return Signature.P521(try privateKey.signature(for: data))
+
+            case .P384Signing(let privateKey):
+                return Signature.P384(try privateKey.signature(for: data))
+
+            case .P256Signing(let privateKey):
+                return Signature.P256(try privateKey.signature(for: data))
+
+            case .P256SecureEnclaveSigning(let privateKey):
+                return Signature.P256(try privateKey.signature(for: data))
+
+            default:
+                throw KeysError.keyTypeDoesNotSupportSigning(self.type)
+        }
+    }
+}
+
+extension PrivateKey: Codable
+{
+    public init(from decoder: Decoder) throws
+    {
+        let container = try decoder.singleValueContainer()
+        let typedData = try container.decode(Data.self)
+
+        try self.init(typedData: typedData)
+    }
+
+    public func encode(to encoder: Encoder) throws
+    {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.typedData)
+    }
+}
+
+extension PrivateKey: Equatable
+{
+    public static func == (lhs: PrivateKey, rhs: PrivateKey) -> Bool
+    {
+        guard let ldata = lhs.typedData else
+        {
+            return false
+        }
+
+        guard let rdata = rhs.typedData else
+        {
+            return false
+        }
+
+        return ldata == rdata
     }
 }
 
@@ -528,7 +595,7 @@ extension PublicKey
         }
     }
 
-    public func isValidSignature<D>(_ signature: Signature, for digest: D) -> Bool where D : Digest
+    public func isValidSignature<D>(_ signature: Signature, for digest: D) -> Bool where D : Crypto.Digest
     {
         switch self
         {
@@ -566,23 +633,73 @@ extension PublicKey
                 return false
         }
     }
+
+    public func isValidSignature(_ signature: Signature, for digest: Digest) -> Bool
+    {
+        let data: Data
+        switch digest
+        {
+            case .SHA256(let hashData):
+                data = hashData
+            case .SHA384(let hashData):
+                data = hashData
+            case .SHA512(let hashData):
+                data = hashData
+        }
+
+        switch self
+        {
+            case .P521Signing(let publicKey):
+                switch signature
+                {
+                    case .P521(let ecdsa):
+                        return publicKey.isValidSignature(ecdsa, for: data)
+
+                    default:
+                        return false
+                }
+
+            case .P384Signing(let publicKey):
+                switch signature
+                {
+                    case .P384(let ecdsa):
+                        return publicKey.isValidSignature(ecdsa, for: data)
+
+                    default:
+                        return false
+                }
+
+            case .P256Signing(let publicKey):
+                switch signature
+                {
+                    case .P256(let ecdsa):
+                        return publicKey.isValidSignature(ecdsa, for: data)
+
+                    default:
+                        return false
+                }
+
+            default:
+                return false
+        }
+    }
+
 }
 
-extension PrivateKey: Equatable
+extension PublicKey: Codable
 {
-    public static func == (lhs: PrivateKey, rhs: PrivateKey) -> Bool
+    public init(from decoder: Decoder) throws
     {
-        guard let ldata = lhs.typedData else
-        {
-            return false
-        }
+        let container = try decoder.singleValueContainer()
+        let typedData = try container.decode(Data.self)
 
-        guard let rdata = rhs.typedData else
-        {
-            return false
-        }
+        try self.init(typedData: typedData)
+    }
 
-        return ldata == rdata
+    public func encode(to encoder: Encoder) throws
+    {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.typedData)
     }
 }
 

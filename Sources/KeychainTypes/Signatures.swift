@@ -8,7 +8,7 @@
 import Crypto
 import Foundation
 
-public enum SignatureType: UInt8
+public enum SignatureType: UInt8, Codable
 {
     case P256 = 2
     case P384 = 3
@@ -110,5 +110,22 @@ public extension Signature
                 let signature = try Crypto.P521.Signing.ECDSASignature(rawRepresentation: data)
                 self = .P521(signature)
         }
+    }
+}
+
+extension Signature: Codable
+{
+    public init(from decoder: Decoder) throws
+    {
+        let container = try decoder.singleValueContainer()
+        let typedData = try container.decode(Data.self)
+
+        try self.init(typedData: typedData)
+    }
+
+    public func encode(to encoder: Encoder) throws
+    {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.typedData)
     }
 }
