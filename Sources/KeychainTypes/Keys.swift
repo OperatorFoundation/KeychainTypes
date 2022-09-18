@@ -568,13 +568,6 @@ extension PublicKey
     }
 }
 
-public enum Signature
-{
-    case P521(P521.Signing.ECDSASignature)
-    case P384(P384.Signing.ECDSASignature)
-    case P256(P256.Signing.ECDSASignature)
-}
-
 extension PrivateKey: Equatable
 {
     public static func == (lhs: PrivateKey, rhs: PrivateKey) -> Bool
