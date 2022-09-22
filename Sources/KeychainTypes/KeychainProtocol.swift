@@ -16,5 +16,8 @@ public protocol KeychainProtocol: Codable
 
     func retrieveOrGeneratePrivateKey(label: String, type: KeyType) -> PrivateKey?
     func storePrivateKey(_ key: PrivateKey, label: String) -> Bool
+
+    #if os(macOS)
     func generateKeySearchQuery(label: String) -> CFDictionary
+    #endif
 }
