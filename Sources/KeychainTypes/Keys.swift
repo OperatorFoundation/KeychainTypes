@@ -22,8 +22,10 @@ public enum KeyType: UInt8, Codable
     case P384Signing = 7
     case P521Signing = 8
 
+    #if os(macOS)
     case P256SecureEnclaveKeyAgreement = 9
     case P256SecureEnclaveSigning = 10
+    #endif
 }
 
 public extension KeyType
@@ -58,8 +60,10 @@ public enum PrivateKey
     case P384Signing(P384.Signing.PrivateKey)
     case P256Signing(P256.Signing.PrivateKey)
 
+    #if os(macOS)
     case P256SecureEnclaveKeyAgreement(SecureEnclave.P256.KeyAgreement.PrivateKey)
     case P256SecureEnclaveSigning(SecureEnclave.P256.Signing.PrivateKey)
+    #endif
 }
 
 extension PrivateKey
@@ -86,10 +90,12 @@ extension PrivateKey
             case .P256Signing:
                 self = .P256Signing(P256.Signing.PrivateKey())
 
+            #if os(macOS)
             case .P256SecureEnclaveKeyAgreement:
                 self = .P256SecureEnclaveKeyAgreement(try SecureEnclave.P256.KeyAgreement.PrivateKey())
             case .P256SecureEnclaveSigning:
                 self = .P256SecureEnclaveSigning(try SecureEnclave.P256.Signing.PrivateKey())
+            #endif
         }
     }
 
@@ -133,10 +139,12 @@ extension PrivateKey
             case .P256Signing:
                 self = .P256Signing(try P256.Signing.PrivateKey(rawRepresentation: data))
 
+            #if os(macOS)
             case .P256SecureEnclaveKeyAgreement:
                 self = .P256SecureEnclaveKeyAgreement(try SecureEnclave.P256.KeyAgreement.PrivateKey(dataRepresentation: data))
             case .P256SecureEnclaveSigning:
                 self = .P256SecureEnclaveSigning(try SecureEnclave.P256.Signing.PrivateKey(dataRepresentation: data))
+            #endif
         }
     }
 
@@ -162,10 +170,12 @@ extension PrivateKey
             case .P256Signing:
                 return .P256Signing
 
+            #if os(macOS)
             case .P256SecureEnclaveKeyAgreement:
                 return .P256SecureEnclaveKeyAgreement
             case .P256SecureEnclaveSigning:
                 return .P256SecureEnclaveSigning
+            #endif
         }
     }
 
@@ -191,10 +201,12 @@ extension PrivateKey
             case .P256Signing(let key):
                 return key.rawRepresentation
 
+            #if os(macOS)
             case .P256SecureEnclaveKeyAgreement(let key):
                 return key.dataRepresentation
             case .P256SecureEnclaveSigning(let key):
                 return key.dataRepresentation
+            #endif
         }
     }
 
@@ -231,10 +243,12 @@ extension PrivateKey
             case .P256Signing:
                 return false
 
+            #if os(macOS)
             case .P256SecureEnclaveKeyAgreement:
                 return true
             case .P256SecureEnclaveSigning:
                 return true
+            #endif
         }
     }
 
@@ -260,10 +274,12 @@ extension PrivateKey
             case .P256Signing(let key):
                 return PublicKey.P256Signing(key.publicKey)
 
+            #if os(macOS)
             case .P256SecureEnclaveKeyAgreement(let key):
                 return PublicKey.P256KeyAgreement(key.publicKey)
             case .P256SecureEnclaveSigning(let key):
                 return PublicKey.P256Signing(key.publicKey)
+            #endif
         }
     }
 
@@ -311,6 +327,7 @@ extension PrivateKey
                         throw KeysError.keyTypeMismatch(self.type, publicKeyShare.type)
                 }
 
+            #if os(macOS)
             case .P256SecureEnclaveKeyAgreement(let privateKey):
                 switch publicKeyShare
                 {
@@ -320,6 +337,8 @@ extension PrivateKey
                     default:
                         throw KeysError.keyTypeMismatch(self.type, publicKeyShare.type)
                 }
+            #endif
+
             default:
                 throw KeysError.keyTypeDoesNotSupportKeyAgreement(self.type)
         }
@@ -338,8 +357,10 @@ extension PrivateKey
             case .P256Signing(let privateKey):
                 return Signature.P256(try privateKey.signature(for: dataToSign))
 
+            #if os(macOS)
             case .P256SecureEnclaveSigning(let privateKey):
                 return Signature.P256(try privateKey.signature(for: dataToSign))
+            #endif
 
             default:
                 throw KeysError.keyTypeDoesNotSupportSigning(self.type)
@@ -359,8 +380,10 @@ extension PrivateKey
             case .P256Signing(let privateKey):
                 return Signature.P256(try privateKey.signature(for: digest))
 
+            #if os(macOS)
             case .P256SecureEnclaveSigning(let privateKey):
                 return Signature.P256(try privateKey.signature(for: digest))
+            #endif
 
             default:
                 throw KeysError.keyTypeDoesNotSupportSigning(self.type)
@@ -391,8 +414,10 @@ extension PrivateKey
             case .P256Signing(let privateKey):
                 return Signature.P256(try privateKey.signature(for: data))
 
+            #if os(macOS)
             case .P256SecureEnclaveSigning(let privateKey):
                 return Signature.P256(try privateKey.signature(for: data))
+            #endif
 
             default:
                 throw KeysError.keyTypeDoesNotSupportSigning(self.type)
@@ -490,10 +515,12 @@ extension PublicKey
             case .P256Signing:
                 self = .P256Signing(try P256.Signing.PublicKey(compactRepresentation: data))
 
+            #if os(macOS)
             case .P256SecureEnclaveKeyAgreement:
                 throw KeysError.cannotStorePublicKeysInSecureEnclave
             case .P256SecureEnclaveSigning:
                 throw KeysError.cannotStorePublicKeysInSecureEnclave
+            #endif
         }
     }
 
