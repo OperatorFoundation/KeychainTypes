@@ -148,6 +148,37 @@ extension PrivateKey
         }
     }
 
+    public init(type: KeyType, x963Data data: Data) throws
+    {
+        switch type
+        {
+            case .Curve25519KeyAgreement:
+                throw KeysError.noX963
+            case .P521KeyAgreement:
+                self = .P521KeyAgreement(try P521.KeyAgreement.PrivateKey(x963Representation: data))
+            case .P384KeyAgreement:
+                self = .P384KeyAgreement(try P384.KeyAgreement.PrivateKey(x963Representation: data))
+            case .P256KeyAgreement:
+                self = .P256KeyAgreement(try P256.KeyAgreement.PrivateKey(x963Representation: data))
+
+            case .Curve25519Signing:
+                throw KeysError.noX963
+            case .P521Signing:
+                self = .P521Signing(try P521.Signing.PrivateKey(x963Representation: data))
+            case .P384Signing:
+                self = .P384Signing(try P384.Signing.PrivateKey(x963Representation: data))
+            case .P256Signing:
+                self = .P256Signing(try P256.Signing.PrivateKey(x963Representation: data))
+
+            #if os(macOS)
+            case .P256SecureEnclaveKeyAgreement:
+                throw KeysError.noX963
+            case .P256SecureEnclaveSigning:
+                throw KeysError.noX963
+            #endif
+        }
+    }
+
     public var type: KeyType
     {
         switch self
@@ -206,6 +237,37 @@ extension PrivateKey
                 return key.dataRepresentation
             case .P256SecureEnclaveSigning(let key):
                 return key.dataRepresentation
+            #endif
+        }
+    }
+
+    public var x963: Data?
+    {
+        switch self
+        {
+            case .Curve25519KeyAgreement:
+                return nil
+            case .P521KeyAgreement(let key):
+                return key.x963Representation
+            case .P384KeyAgreement(let key):
+                return key.x963Representation
+            case .P256KeyAgreement(let key):
+                return key.x963Representation
+
+            case .Curve25519Signing:
+                return nil
+            case .P521Signing(let key):
+                return key.x963Representation
+            case .P384Signing(let key):
+                return key.x963Representation
+            case .P256Signing(let key):
+                return key.x963Representation
+
+            #if os(macOS)
+            case .P256SecureEnclaveKeyAgreement:
+                return nil
+            case .P256SecureEnclaveSigning:
+                return nil
             #endif
         }
     }
@@ -750,6 +812,7 @@ extension PublicKey: Equatable
 
 public enum KeysError: Error
 {
+    case noX963
     case cannotStorePublicKeysInSecureEnclave
     case keyTypeMismatch(KeyType, KeyType)
     case keyTypeDoesNotSupportKeyAgreement(KeyType)
