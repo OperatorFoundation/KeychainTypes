@@ -810,6 +810,19 @@ extension PublicKey: Equatable
     }
 }
 
+extension PublicKey: Hashable
+{
+    public func hash(into hasher: inout Hasher)
+    {
+        guard let data = self.typedData else
+        {
+            return
+        }
+
+        hasher.combine(data)
+    }
+}
+
 public enum KeysError: Error
 {
     case noX963
