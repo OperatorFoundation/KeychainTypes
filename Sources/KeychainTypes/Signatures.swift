@@ -129,3 +129,42 @@ extension Signature: Codable
         try container.encode(self.typedData)
     }
 }
+
+extension Signature: Equatable
+{
+    public static func == (lhs: Signature, rhs: Signature) -> Bool
+    {
+        switch lhs
+        {
+            case .P256(let ls):
+                switch rhs
+                {
+                    case .P256(let rs):
+                        return ls.rawRepresentation == rs.rawRepresentation
+
+                    default:
+                        return false
+                }
+
+            case .P384(let ls):
+                switch rhs
+                {
+                    case .P384(let rs):
+                        return ls.rawRepresentation == rs.rawRepresentation
+
+                    default:
+                        return false
+                }
+
+            case .P521(let ls):
+                switch rhs
+                {
+                    case .P521(let rs):
+                        return ls.rawRepresentation == rs.rawRepresentation
+
+                    default:
+                        return false
+                }
+        }
+    }
+}
