@@ -506,7 +506,7 @@ extension PrivateKey: Codable
 
 extension PrivateKey
 {
-    var string: String?
+    public var string: String?
     {
         do
         {
@@ -818,7 +818,7 @@ extension PublicKey: Codable
 
 extension PublicKey
 {
-    var string: String?
+    public var string: String?
     {
         do
         {

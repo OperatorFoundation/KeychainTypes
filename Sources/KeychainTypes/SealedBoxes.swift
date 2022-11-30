@@ -180,7 +180,7 @@ public extension SealedBox
 
 extension SealedBox
 {
-    var string: String?
+    public var string: String?
     {
         do
         {
