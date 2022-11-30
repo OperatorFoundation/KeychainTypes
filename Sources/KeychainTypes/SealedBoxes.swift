@@ -74,15 +74,15 @@ extension SealedBox: Codable
     public init(from decoder: Decoder) throws
     {
         let container = try decoder.singleValueContainer()
-        let sealedBoxData = try container.decode(Data.self)
-        try self.init(typedData: sealedBoxData)
+        let sealedBoxTypedData = try container.decode(Data.self)
+        try self.init(typedData: sealedBoxTypedData)
     }
 
     public func encode(to encoder: Encoder) throws
     {
         var container = encoder.singleValueContainer()
-        let sealedBoxData = self.typedData
-        try container.encode(sealedBoxData)
+        let sealedBoxTypedData = self.typedData
+        try container.encode(sealedBoxTypedData)
     }
 }
 
@@ -175,6 +175,30 @@ public extension SealedBox
                         throw SealedBoxError.nonceTypeMismatch
                 }
         }
+    }
+}
+
+extension SealedBox
+{
+    var string: String?
+    {
+        do
+        {
+            let encoder = JSONEncoder()
+            let resultData = try encoder.encode(self)
+            return resultData.string.replacingOccurrences(of: "\"", with: "")
+        }
+        catch
+        {
+            return nil
+        }
+    }
+
+    public init(string: String) throws
+    {
+        let inputString = "\"\(string)\""
+        let inputData = inputString.data
+        try self.init(typedData: inputData)
     }
 }
 
