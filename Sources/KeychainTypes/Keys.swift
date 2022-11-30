@@ -504,6 +504,30 @@ extension PrivateKey: Codable
     }
 }
 
+extension PrivateKey
+{
+    var string: String?
+    {
+        do
+        {
+            let encoder = JSONEncoder()
+            let resultData = try encoder.encode(self)
+            return resultData.string.replacingOccurrences(of: "\"", with: "")
+        }
+        catch
+        {
+            return nil
+        }
+    }
+
+    public init(string: String) throws
+    {
+        let inputString = "\"\(string)\""
+        let inputData = inputString.data
+        try self.init(typedData: inputData)
+    }
+}
+
 extension PrivateKey: Equatable
 {
     public static func == (lhs: PrivateKey, rhs: PrivateKey) -> Bool
@@ -789,6 +813,30 @@ extension PublicKey: Codable
     {
         var container = encoder.singleValueContainer()
         try container.encode(self.typedData)
+    }
+}
+
+extension PublicKey
+{
+    var string: String?
+    {
+        do
+        {
+            let encoder = JSONEncoder()
+            let resultData = try encoder.encode(self)
+            return resultData.string.replacingOccurrences(of: "\"", with: "")
+        }
+        catch
+        {
+            return nil
+        }
+    }
+
+    public init(string: String) throws
+    {
+        let inputString = "\"\(string)\""
+        let inputData = inputString.data
+        try self.init(typedData: inputData)
     }
 }
 
