@@ -40,6 +40,21 @@ public enum SealedBox
     case ChaChaPoly(ChaChaPoly.SealedBox)
 }
 
+extension SealedBox
+{
+    public func open(key: SymmetricKey) throws -> Data
+    {
+        switch self
+        {
+            case .AESGCM(let box):
+                return try Crypto.AES.GCM.open(box, using: key)
+
+            case .ChaChaPoly(let box):
+                return try Crypto.ChaChaPoly.open(box, using: key)
+        }
+    }
+}
+
 extension SealedBox: Equatable
 {
     public static func == (lhs: SealedBox, rhs: SealedBox) -> Bool
