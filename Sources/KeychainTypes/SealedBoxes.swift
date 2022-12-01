@@ -213,7 +213,8 @@ extension SealedBox
     {
         let inputString = "\"\(string)\""
         let inputData = inputString.data
-        try self.init(typedData: inputData)
+        let decoder = JSONDecoder()
+        self = try decoder.decode(Self.self, from: inputData)
     }
 }
 
