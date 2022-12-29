@@ -68,6 +68,37 @@ public enum PrivateKey
 
 extension PrivateKey
 {
+    static public func new(type: KeyType) throws -> PrivateKey
+    {
+        switch type
+        {
+            case .Curve25519KeyAgreement:
+                return .Curve25519KeyAgreement(Curve25519.KeyAgreement.PrivateKey())
+            case .P521KeyAgreement:
+                return .P521KeyAgreement(P521.KeyAgreement.PrivateKey())
+            case .P384KeyAgreement:
+                return .P384KeyAgreement(P384.KeyAgreement.PrivateKey())
+            case .P256KeyAgreement:
+                return .P256KeyAgreement(P256.KeyAgreement.PrivateKey())
+
+            case .Curve25519Signing:
+                return .Curve25519KeyAgreement(Curve25519.KeyAgreement.PrivateKey())
+            case .P521Signing:
+                return .P521Signing(P521.Signing.PrivateKey())
+            case .P384Signing:
+                return .P384Signing(P384.Signing.PrivateKey())
+            case .P256Signing:
+                return .P256Signing(P256.Signing.PrivateKey())
+
+            #if os(macOS)
+            case .P256SecureEnclaveKeyAgreement:
+                return .P256SecureEnclaveKeyAgreement(try SecureEnclave.P256.KeyAgreement.PrivateKey())
+            case .P256SecureEnclaveSigning:
+                return .P256SecureEnclaveSigning(try SecureEnclave.P256.Signing.PrivateKey())
+            #endif
+        }
+    }
+
     public init(type: KeyType) throws
     {
         switch type
