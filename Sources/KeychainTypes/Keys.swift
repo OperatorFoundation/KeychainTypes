@@ -113,7 +113,7 @@ extension PrivateKey
                 self = .P256KeyAgreement(P256.KeyAgreement.PrivateKey())
 
             case .Curve25519Signing:
-                self = .Curve25519KeyAgreement(Curve25519.KeyAgreement.PrivateKey())
+                self = .Curve25519Signing(Curve25519.Signing.PrivateKey())
             case .P521Signing:
                 self = .P521Signing(P521.Signing.PrivateKey())
             case .P384Signing:
@@ -162,7 +162,7 @@ extension PrivateKey
                 self = .P256KeyAgreement(try P256.KeyAgreement.PrivateKey(rawRepresentation: data))
 
             case .Curve25519Signing:
-                self = .Curve25519KeyAgreement(try Curve25519.KeyAgreement.PrivateKey(rawRepresentation: data))
+                self = .Curve25519Signing(try Curve25519.Signing.PrivateKey(rawRepresentation: data))
             case .P521Signing:
                 self = .P521Signing(try P521.Signing.PrivateKey(rawRepresentation: data))
             case .P384Signing:
