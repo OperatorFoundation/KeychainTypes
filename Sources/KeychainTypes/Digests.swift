@@ -146,3 +146,15 @@ public extension SHA512Digest
         return Data(self)
     }
 }
+
+public struct AuthenticationCode: Codable
+{
+    public let type: DigestType
+    public let code: Data
+
+    public init(type: DigestType, code: Data)
+    {
+        self.type = type
+        self.code = code
+    }
+}

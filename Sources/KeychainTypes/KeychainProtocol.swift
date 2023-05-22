@@ -20,4 +20,7 @@ public protocol KeychainProtocol: Codable
     func storePassword(server: String, username: String, password: String) throws
     func retrievePassword(server: String) throws -> (username: String, password: String)
     func deletePassword(server: String) throws
+
+    func newSymmetricKey(sizeInBits: Int) -> SymmetricKey
+    func hmac(digest: DigestType, key: SymmetricKey, data: Data) -> AuthenticationCode
 }
