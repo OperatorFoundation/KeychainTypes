@@ -8,6 +8,8 @@
 import Crypto
 import Foundation
 
+import Datable
+
 extension SymmetricKey: Codable
 {
     public init(from decoder: Decoder) throws
@@ -29,5 +31,23 @@ public extension SymmetricKey
     var data: Data
     {
         self.withUnsafeBytes {return Data(bytes: $0.baseAddress!, count: $0.count)}
+    }
+}
+
+extension SymmetricKey: CustomStringConvertible
+{
+    public var description: String
+    {
+        let encoder = JSONEncoder()
+
+        do
+        {
+            let data = try encoder.encode(self)
+            return data.string
+        }
+        catch
+        {
+            return "[SymmetricKey]"
+        }
     }
 }
