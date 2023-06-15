@@ -21,12 +21,15 @@ extension SymmetricKey: CustomStringConvertible
 {
     public var description: String
     {
-        self.withUnsafeBytes
+        do
         {
-            bytes in
-
-            let data = Data(bytes)
-            return data.base64EncodedString()
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(self)
+            return data.string
+        }
+        catch
+        {
+            return "{}"
         }
     }
 }
