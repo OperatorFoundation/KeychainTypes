@@ -10,6 +10,7 @@ import Foundation
 
 public protocol KeychainProtocol: Codable
 {
+    func generateEphemeralKey(type: KeyType) -> PrivateKey?
     func generateAndSavePrivateKey(label: String, type: KeyType) -> PrivateKey?
     func retrievePrivateKey(label: String, type: KeyType) -> PrivateKey?
     func deleteKey(label: String)
