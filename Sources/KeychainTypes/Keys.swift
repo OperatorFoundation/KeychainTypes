@@ -10,6 +10,18 @@ import Foundation
 
 import Datable
 
+public struct Keypair
+{
+    public let privateKey: PrivateKey
+    public let publicKey: PublicKey
+
+    public init(privateKey: PrivateKey, publicKey: PublicKey)
+    {
+        self.privateKey = privateKey
+        self.publicKey = publicKey
+    }
+}
+
 public enum KeyType: UInt8, Codable
 {
     case Curve25519KeyAgreement = 1
