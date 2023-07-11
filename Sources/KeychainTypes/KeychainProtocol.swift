@@ -18,7 +18,7 @@ public protocol KeychainProtocol: Codable
     func retrieveOrGeneratePrivateKey(label: String, type: KeyType) -> PrivateKey?
     func storePrivateKey(_ key: PrivateKey, label: String) -> Bool
 
-    func storePassword(server: String, username: String, password: String) throws
+    func storePassword(server: String, username: String, password: String, overwrite: Bool) throws
     func retrievePassword(server: String) throws -> (username: String, password: String)
     func deletePassword(server: String) throws
 
