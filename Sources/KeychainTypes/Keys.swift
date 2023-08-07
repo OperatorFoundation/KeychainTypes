@@ -9,6 +9,7 @@ import Crypto
 import Foundation
 
 import Datable
+import SwiftHexTools
 
 public struct Keypair
 {
@@ -34,7 +35,7 @@ public enum KeyType: UInt8, Codable
     case P384Signing = 7
     case P521Signing = 8
 
-    #if os(macOS)
+    #if os(macOS) || os(iOS)
     case P256SecureEnclaveKeyAgreement = 9
     case P256SecureEnclaveSigning = 10
     #endif
@@ -72,7 +73,7 @@ public enum PrivateKey
     case P384Signing(P384.Signing.PrivateKey)
     case P256Signing(P256.Signing.PrivateKey)
 
-    #if os(macOS)
+    #if os(macOS) || os(iOS)
     case P256SecureEnclaveKeyAgreement(SecureEnclave.P256.KeyAgreement.PrivateKey)
     case P256SecureEnclaveSigning(SecureEnclave.P256.Signing.PrivateKey)
     #endif
@@ -102,7 +103,7 @@ extension PrivateKey
             case .P256Signing:
                 return .P256Signing(P256.Signing.PrivateKey())
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement:
                 return .P256SecureEnclaveKeyAgreement(try SecureEnclave.P256.KeyAgreement.PrivateKey())
             case .P256SecureEnclaveSigning:
@@ -133,7 +134,7 @@ extension PrivateKey
             case .P256Signing:
                 self = .P256Signing(P256.Signing.PrivateKey())
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement:
                 self = .P256SecureEnclaveKeyAgreement(try SecureEnclave.P256.KeyAgreement.PrivateKey())
             case .P256SecureEnclaveSigning:
@@ -146,7 +147,7 @@ extension PrivateKey
     {
         guard typedData.count > 1 else
         {
-            throw KeysError.badTypeData
+            throw KeysError.badKeyTypeData(#file, #line, typedData.hex, typedData.count)
         }
 
         let typeData = typedData[0..<1]
@@ -154,7 +155,7 @@ extension PrivateKey
 
         guard let type = KeyType(typeData) else
         {
-            throw KeysError.badTypeData
+            throw KeysError.badKeyTypeData(#file, #line, typedData.hex, typedData.count)
         }
 
         try self.init(type: type, data: valueData)
@@ -182,7 +183,7 @@ extension PrivateKey
             case .P256Signing:
                 self = .P256Signing(try P256.Signing.PrivateKey(rawRepresentation: data))
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement:
                 self = .P256SecureEnclaveKeyAgreement(try SecureEnclave.P256.KeyAgreement.PrivateKey(dataRepresentation: data))
             case .P256SecureEnclaveSigning:
@@ -213,7 +214,7 @@ extension PrivateKey
             case .P256Signing:
                 self = .P256Signing(try P256.Signing.PrivateKey(x963Representation: data))
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement:
                 throw KeysError.noX963
             case .P256SecureEnclaveSigning:
@@ -244,7 +245,7 @@ extension PrivateKey
             case .P256Signing:
                 return .P256Signing
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement:
                 return .P256SecureEnclaveKeyAgreement
             case .P256SecureEnclaveSigning:
@@ -275,7 +276,7 @@ extension PrivateKey
             case .P256Signing(let key):
                 return key.rawRepresentation
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement(let key):
                 return key.dataRepresentation
             case .P256SecureEnclaveSigning(let key):
@@ -306,7 +307,7 @@ extension PrivateKey
             case .P256Signing(let key):
                 return key.x963Representation
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement:
                 return nil
             case .P256SecureEnclaveSigning:
@@ -348,7 +349,7 @@ extension PrivateKey
             case .P256Signing:
                 return false
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement:
                 return true
             case .P256SecureEnclaveSigning:
@@ -379,7 +380,7 @@ extension PrivateKey
             case .P256Signing(let key):
                 return PublicKey.P256Signing(key.publicKey)
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement(let key):
                 return PublicKey.P256KeyAgreement(key.publicKey)
             case .P256SecureEnclaveSigning(let key):
@@ -432,7 +433,7 @@ extension PrivateKey
                         throw KeysError.keyTypeMismatch(self.type, publicKeyShare.type)
                 }
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement(let privateKey):
                 switch publicKeyShare
                 {
@@ -462,7 +463,7 @@ extension PrivateKey
             case .P256Signing(let privateKey):
                 return Signature.P256(try privateKey.signature(for: dataToSign))
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveSigning(let privateKey):
                 return Signature.P256(try privateKey.signature(for: dataToSign))
             #endif
@@ -485,7 +486,7 @@ extension PrivateKey
             case .P256Signing(let privateKey):
                 return Signature.P256(try privateKey.signature(for: digest))
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveSigning(let privateKey):
                 return Signature.P256(try privateKey.signature(for: digest))
             #endif
@@ -519,7 +520,7 @@ extension PrivateKey
             case .P256Signing(let privateKey):
                 return Signature.P256(try privateKey.signature(for: data))
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveSigning(let privateKey):
                 return Signature.P256(try privateKey.signature(for: data))
             #endif
@@ -609,7 +610,7 @@ extension PublicKey
     {
         guard typedData.count > 1 else
         {
-            throw KeysError.badTypeData
+            throw KeysError.badKeyTypeData(#file, #line, typedData.hex, typedData.count)
         }
 
         let typeData = typedData[0..<1]
@@ -617,7 +618,7 @@ extension PublicKey
 
         guard let type = KeyType(typeData) else
         {
-            throw KeysError.badTypeData
+            throw KeysError.badKeyTypeData(#file, #line, typedData.hex, typedData.count)
         }
 
         try self.init(type: type, data: valueData)
@@ -645,7 +646,7 @@ extension PublicKey
             case .P256Signing:
                 self = .P256Signing(try P256.Signing.PublicKey(compactRepresentation: data))
 
-            #if os(macOS)
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement:
                 throw KeysError.cannotStorePublicKeysInSecureEnclave
             case .P256SecureEnclaveSigning:
@@ -899,4 +900,5 @@ public enum KeysError: Error
     case keyTypeDoesNotSupportKeyAgreement(KeyType)
     case keyTypeDoesNotSupportSigning(KeyType)
     case badTypeData
+    case badKeyTypeData(String, Int, String, Int)
 }
