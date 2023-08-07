@@ -8,6 +8,10 @@
 import Crypto
 import Foundation
 
+// FIXME - add .ciphertext computed property that gives ciphertext without nonce
+// FIXME - add a constructor that takes ciphertext and nonce separately
+// FIXME - switch to using SealedBox.seal() instead of SealedBox constructor
+
 public enum SealedBoxType: UInt8, Codable
 {
     case AESGCM = 2

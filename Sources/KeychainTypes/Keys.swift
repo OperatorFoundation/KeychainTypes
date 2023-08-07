@@ -860,31 +860,6 @@ extension PublicKey: Codable
     }
 }
 
-extension PublicKey
-{
-    public var string: String?
-    {
-        do
-        {
-            let encoder = JSONEncoder()
-            let resultData = try encoder.encode(self)
-            return resultData.string.replacingOccurrences(of: "\"", with: "")
-        }
-        catch
-        {
-            return nil
-        }
-    }
-
-    public init(string: String) throws
-    {
-        let inputString = "\"\(string)\""
-        let inputData = inputString.data
-        let decoder = JSONDecoder()
-        self = try decoder.decode(Self.self, from: inputData)
-    }
-}
-
 extension PublicKey: Equatable
 {
     public static func == (lhs: PublicKey, rhs: PublicKey) -> Bool
