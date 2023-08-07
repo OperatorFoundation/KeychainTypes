@@ -9,6 +9,7 @@ import Crypto
 import Foundation
 
 import Datable
+import SwiftHexTools
 
 public struct Keypair
 {
@@ -146,7 +147,7 @@ extension PrivateKey
     {
         guard typedData.count > 1 else
         {
-            throw KeysError.badTypeData
+            throw KeysError.badKeyTypeData(#file, #line, typedData.hex, typedData.count)
         }
 
         let typeData = typedData[0..<1]
@@ -154,7 +155,7 @@ extension PrivateKey
 
         guard let type = KeyType(typeData) else
         {
-            throw KeysError.badTypeData
+            throw KeysError.badKeyTypeData(#file, #line, typedData.hex, typedData.count)
         }
 
         try self.init(type: type, data: valueData)
@@ -609,7 +610,7 @@ extension PublicKey
     {
         guard typedData.count > 1 else
         {
-            throw KeysError.badTypeData
+            throw KeysError.badKeyTypeData(#file, #line, typedData.hex, typedData.count)
         }
 
         let typeData = typedData[0..<1]
@@ -617,7 +618,7 @@ extension PublicKey
 
         guard let type = KeyType(typeData) else
         {
-            throw KeysError.badTypeData
+            throw KeysError.badKeyTypeData(#file, #line, typedData.hex, typedData.count)
         }
 
         try self.init(type: type, data: valueData)
@@ -924,4 +925,5 @@ public enum KeysError: Error
     case keyTypeDoesNotSupportKeyAgreement(KeyType)
     case keyTypeDoesNotSupportSigning(KeyType)
     case badTypeData
+    case badKeyTypeData(String, Int, String, Int)
 }
