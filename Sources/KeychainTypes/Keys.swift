@@ -846,7 +846,7 @@ extension PublicKey
 
 extension PublicKey
 {
-    var jsonString: String?
+    public var jsonString: String?
     {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .withoutEscapingSlashes
@@ -863,7 +863,7 @@ extension PublicKey
         }
     }
     
-    init?(jsonString: String)
+    public init?(jsonString: String)
     {
         let jsonData = jsonString.data
         let decoder = JSONDecoder()
