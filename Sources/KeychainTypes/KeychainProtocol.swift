@@ -11,7 +11,7 @@ import Foundation
 public protocol KeychainProtocol: Codable
 {
     func generateEphemeralKeypair(type: KeyType) -> Keypair?
-    func generateAndSavePrivateKey(label: String, type: KeyType) -> PrivateKey?
+    func generateAndSavePrivateKey(label: String, type: KeyType, overwrite: Bool) -> PrivateKey?
     func retrievePrivateKey(label: String, type: KeyType) -> PrivateKey?
     func deleteKey(label: String)
     func ecdh(privateKey: PrivateKey, publicKey: PublicKey) -> SymmetricKey?
