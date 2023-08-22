@@ -33,3 +33,4 @@ public extension SymmetricKey
         self.withUnsafeBytes {return Data(bytes: $0.baseAddress!, count: $0.count)}
     }
 }
+

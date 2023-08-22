@@ -841,7 +841,28 @@ extension PublicKey
                 return false
         }
     }
+}
 
+extension PrivateKey
+{
+    func exchangeSharedSecret(publicKey: PublicKey) throws -> SharedSecret
+    {
+        switch self
+        {
+            case .P256KeyAgreement(let privateKey):
+                switch publicKey
+                {
+                    case .P256KeyAgreement(let internalPublicKey):
+                        return try privateKey.sharedSecretFromKeyAgreement(with: internalPublicKey)
+
+                    default:
+                        throw KeysError.keyTypeMismatch(.P256KeyAgreement, publicKey.type)
+                }
+
+            default:
+                throw KeysError.keyTypeMismatch(.P256KeyAgreement, self.type)
+        }
+    }
 }
 
 extension PublicKey: Codable
