@@ -865,6 +865,42 @@ extension PrivateKey
     }
 }
 
+extension PublicKey
+{
+    public var jsonString: String?
+    {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .withoutEscapingSlashes
+        
+        do
+        {
+            let jsonData = try encoder.encode(self)
+            return jsonData.string
+        }
+        catch
+        {
+            print("Failed to create a json representation of a public key. Error: \(error)")
+            return nil
+        }
+    }
+    
+    public init?(jsonString: String)
+    {
+        let jsonData = jsonString.data
+        let decoder = JSONDecoder()
+        
+        do
+        {
+            self = try decoder.decode(PublicKey.self, from: jsonData)
+        }
+        catch
+        {
+            print("Failed to create a public key from a JSON string. Error: \(error)")
+            return nil
+        }
+    }
+}
+
 extension PublicKey: Codable
 {
     public init(from decoder: Decoder) throws
