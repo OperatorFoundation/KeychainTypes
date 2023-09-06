@@ -845,7 +845,7 @@ extension PublicKey
 
 extension PrivateKey
 {
-    func exchangeSharedSecret(publicKey: PublicKey) throws -> SharedSecret
+    public func exchangeSharedSecret(publicKey: PublicKey) throws -> SharedSecret
     {
         switch self
         {

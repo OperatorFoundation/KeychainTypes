@@ -18,7 +18,7 @@ extension SharedSecret
 
 extension SharedSecret
 {
-    func symmetricKey() -> SymmetricKey
+    public func symmetricKey() -> SymmetricKey
     {
         return SymmetricKey(data: self.data)
     }
