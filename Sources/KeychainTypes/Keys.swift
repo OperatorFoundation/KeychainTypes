@@ -858,6 +858,16 @@ extension PrivateKey
                     default:
                         throw KeysError.keyTypeMismatch(.P256KeyAgreement, publicKey.type)
                 }
+            
+            case .P256SecureEnclaveKeyAgreement(let privateKey):
+                switch publicKey
+                {
+                    case .P256KeyAgreement(let internalPublicKey):
+                        return try privateKey.sharedSecretFromKeyAgreement(with: internalPublicKey)
+                        
+                    default:
+                        throw KeysError.keyTypeMismatch(.P256KeyAgreement, publicKey.type)
+                }
 
             default:
                 throw KeysError.keyTypeMismatch(.P256KeyAgreement, self.type)
