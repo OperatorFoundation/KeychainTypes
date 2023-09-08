@@ -859,6 +859,7 @@ extension PrivateKey
                         throw KeysError.keyTypeMismatch(.P256KeyAgreement, publicKey.type)
                 }
             
+            #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement(let privateKey):
                 switch publicKey
                 {
@@ -868,7 +869,8 @@ extension PrivateKey
                     default:
                         throw KeysError.keyTypeMismatch(.P256KeyAgreement, publicKey.type)
                 }
-
+            #endif
+                
             default:
                 throw KeysError.keyTypeMismatch(.P256KeyAgreement, self.type)
         }
