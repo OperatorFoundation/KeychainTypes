@@ -32,7 +32,11 @@ let package = Package(
         ),
         .testTarget(
             name: "KeychainTypesTests",
-            dependencies: ["KeychainTypes"]),
+            dependencies: [
+                "Crypto",
+                "KeychainTypes",
+                "SwiftHexTools",
+            ]),
     ],
     swiftLanguageVersions: [.v5]
 )
