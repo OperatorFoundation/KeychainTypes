@@ -555,8 +555,8 @@ extension PrivateKey
         do
         {
             let encoder = JSONEncoder()
-            let resultData = try encoder.encode(self)
-            return resultData.string.replacingOccurrences(of: "\"", with: "")
+            encoder.outputFormatting = .withoutEscapingSlashes
+            return try encoder.encode(self).string
         }
         catch
         {
@@ -845,7 +845,7 @@ extension PublicKey
 
 extension PrivateKey
 {
-    func exchangeSharedSecret(publicKey: PublicKey) throws -> SharedSecret
+    public func exchangeSharedSecret(publicKey: PublicKey) throws -> SharedSecret
     {
         switch self
         {
@@ -858,7 +858,19 @@ extension PrivateKey
                     default:
                         throw KeysError.keyTypeMismatch(.P256KeyAgreement, publicKey.type)
                 }
-
+            
+            #if os(macOS) || os(iOS)
+            case .P256SecureEnclaveKeyAgreement(let privateKey):
+                switch publicKey
+                {
+                    case .P256KeyAgreement(let internalPublicKey):
+                        return try privateKey.sharedSecretFromKeyAgreement(with: internalPublicKey)
+                        
+                    default:
+                        throw KeysError.keyTypeMismatch(.P256KeyAgreement, publicKey.type)
+                }
+            #endif
+                
             default:
                 throw KeysError.keyTypeMismatch(.P256KeyAgreement, self.type)
         }

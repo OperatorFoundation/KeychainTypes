@@ -204,8 +204,8 @@ extension SealedBox
         do
         {
             let encoder = JSONEncoder()
-            let resultData = try encoder.encode(self)
-            return resultData.string.replacingOccurrences(of: "\"", with: "")
+            encoder.outputFormatting = .withoutEscapingSlashes
+            return try encoder.encode(self).string
         }
         catch
         {
