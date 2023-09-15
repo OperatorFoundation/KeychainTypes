@@ -24,6 +24,7 @@ extension SymmetricKey: CustomStringConvertible
         do
         {
             let encoder = JSONEncoder()
+            encoder.outputFormatting = .withoutEscapingSlashes
             let data = try encoder.encode(self)
             return data.string
         }
