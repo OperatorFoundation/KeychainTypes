@@ -631,20 +631,20 @@ extension PublicKey
             case .Curve25519KeyAgreement:
                 self = .Curve25519KeyAgreement(try Curve25519.KeyAgreement.PublicKey(rawRepresentation: data))
             case .P521KeyAgreement:
-                self = .P521KeyAgreement(try P521.KeyAgreement.PublicKey(compactRepresentation: data))
+                self = .P521KeyAgreement(try P521.KeyAgreement.PublicKey(x963Representation: data))
             case .P384KeyAgreement:
-                self = .P384KeyAgreement(try P384.KeyAgreement.PublicKey(compactRepresentation: data))
+                self = .P384KeyAgreement(try P384.KeyAgreement.PublicKey(x963Representation: data))
             case .P256KeyAgreement:
-                self = .P256KeyAgreement(try P256.KeyAgreement.PublicKey(compactRepresentation: data))
+                self = .P256KeyAgreement(try P256.KeyAgreement.PublicKey(x963Representation: data))
 
             case .Curve25519Signing:
                 self = .Curve25519KeyAgreement(try Curve25519.KeyAgreement.PublicKey(rawRepresentation: data))
             case .P521Signing:
-                self = .P521Signing(try P521.Signing.PublicKey(compactRepresentation: data))
+                self = .P521Signing(try P521.Signing.PublicKey(x963Representation: data))
             case .P384Signing:
-                self = .P384Signing(try P384.Signing.PublicKey(compactRepresentation: data))
+                self = .P384Signing(try P384.Signing.PublicKey(x963Representation: data))
             case .P256Signing:
-                self = .P256Signing(try P256.Signing.PublicKey(compactRepresentation: data))
+                self = .P256Signing(try P256.Signing.PublicKey(x963Representation: data))
 
             #if os(macOS) || os(iOS)
             case .P256SecureEnclaveKeyAgreement:
@@ -686,20 +686,20 @@ extension PublicKey
             case .Curve25519KeyAgreement(let key):
                 return key.rawRepresentation
             case .P521KeyAgreement(let key):
-                return key.compactRepresentation
+                return key.x963Representation
             case .P384KeyAgreement(let key):
-                return key.compactRepresentation
+                return key.x963Representation
             case .P256KeyAgreement(let key):
-                return key.compactRepresentation
+                return key.x963Representation
 
             case .Curve25519Signing(let key):
                 return key.rawRepresentation
             case .P521Signing(let key):
-                return key.compactRepresentation
+                return key.x963Representation
             case .P384Signing(let key):
-                return key.compactRepresentation
+                return key.x963Representation
             case .P256Signing(let key):
-                return key.compactRepresentation
+                return key.x963Representation
         }
     }
 

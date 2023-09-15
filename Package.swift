@@ -33,7 +33,7 @@ let package = Package(
         .testTarget(
             name: "KeychainTypesTests",
             dependencies: [
-                "Crypto",
+                .product(name: "Crypto", package: "swift-crypto"),
                 "KeychainTypes",
                 "SwiftHexTools",
             ]),
