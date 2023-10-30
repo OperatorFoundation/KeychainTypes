@@ -20,7 +20,15 @@ final class KeychainTypesTests: XCTestCase
 
     func testPublicKey() throws
     {
-        let inputString = "\"AgTFTw3/aadsxD45l2ZfT3leJuXq8v9RsEdc+hOjttVpSx4BYvU9Yths3WFYx9npAggJDIrlE/9fSfVBBkBwR2pu\""
+        let inputString = "\"AgR8/StHp2HnkV9oqxk0mR0ZAmHEWpyNTeAMrP3XORBvsjmCSozWougOLljPwxy6Kmybv8aix3MJyr1w8hFec6BU\""
         let publicKey = PublicKey(jsonString: inputString)
+    }
+    
+    func testPublicKeyJSON() throws
+    {
+        let keyString = "\"AgR8/StHp2HnkV9oqxk0mR0ZAmHEWpyNTeAMrP3XORBvsjmCSozWougOLljPwxy6Kmybv8aix3MJyr1w8hFec6BU\""
+        
+        let decoder = JSONDecoder()
+        let key = try decoder.decode(PublicKey.self, from: keyString.data)
     }
 }
