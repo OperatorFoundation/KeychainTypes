@@ -613,8 +613,8 @@ extension PublicKey
             throw KeysError.badKeyTypeData(#file, #line, typedData.hex, typedData.count)
         }
 
-        let typeData = typedData[0..<1]
-        let valueData = typedData[1...]
+        let typeData = Data(typedData[0..<1])
+        let valueData = Data(typedData[1...])
 
         guard let type = KeyType(typeData) else
         {

@@ -17,4 +17,18 @@ final class KeychainTypesTests: XCTestCase
         print("der: \(publicKey.derRepresentation.count) - \(publicKey.derRepresentation.hex)")
         print("pem: \(publicKey.pemRepresentation.count) - \(publicKey.pemRepresentation.data.hex)")
     }
+
+    func testPublicKey() throws
+    {
+        let inputString = "\"AgR8/StHp2HnkV9oqxk0mR0ZAmHEWpyNTeAMrP3XORBvsjmCSozWougOLljPwxy6Kmybv8aix3MJyr1w8hFec6BU\""
+        let publicKey = PublicKey(jsonString: inputString)
+    }
+    
+    func testPublicKeyJSON() throws
+    {
+        let keyString = "\"AgR8/StHp2HnkV9oqxk0mR0ZAmHEWpyNTeAMrP3XORBvsjmCSozWougOLljPwxy6Kmybv8aix3MJyr1w8hFec6BU\""
+        
+        let decoder = JSONDecoder()
+        let key = try decoder.decode(PublicKey.self, from: keyString.data)
+    }
 }
