@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-crypto", from: "2.5.0"),
+        .package(url: "https://github.com/apple/swift-crypto", from: "3.2.0"),
         .package(url: "https://github.com/OperatorFoundation/Datable", from: "4.0.0"),
         .package(url: "https://github.com/OperatorFoundation/SwiftHexTools", from: "1.2.6")
     ],
