@@ -31,4 +31,23 @@ final class KeychainTypesTests: XCTestCase
         let decoder = JSONDecoder()
         let key = try decoder.decode(PublicKey.self, from: keyString.data)
     }
+    
+    func testBase64AndroidCompatibility()
+    {
+        let androidBase64String = "AgIC"
+        let data = Data([2, 2, 2])
+        let base64String = data.base64EncodedString()
+        
+        print("base64String: \(base64String)")
+        
+        XCTAssertEqual(base64String, androidBase64String)
+    }
+    
+    func testKeychainStringAndroidCompatibility()
+    {
+        let androidKeychainString = "\"AgTIL1ZOd/o2sQLftT4V/ex82zOIWFyyreBp4sEN+/GbUg86ByjcNut/ebBWQj+Ju41N+CtYXNG2RFGXX4KSgIHw\""
+        let publicKey = PublicKey(jsonString: androidKeychainString)
+        
+        XCTAssertNotNil(publicKey)
+    }
 }
