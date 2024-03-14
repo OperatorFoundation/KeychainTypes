@@ -123,7 +123,13 @@ extension PrivateKey
             case .P384KeyAgreement:
                 self = .P384KeyAgreement(P384.KeyAgreement.PrivateKey())
             case .P256KeyAgreement:
-                self = .P256KeyAgreement(P256.KeyAgreement.PrivateKey())
+                var cryptoKitPrivateKey = P256.KeyAgreement.PrivateKey()
+                while cryptoKitPrivateKey.publicKey.compactRepresentation == nil
+                {
+                    cryptoKitPrivateKey = P256.KeyAgreement.PrivateKey()
+                }
+
+                self = .P256KeyAgreement(cryptoKitPrivateKey)
 
             case .Curve25519Signing:
                 self = .Curve25519Signing(Curve25519.Signing.PrivateKey())
