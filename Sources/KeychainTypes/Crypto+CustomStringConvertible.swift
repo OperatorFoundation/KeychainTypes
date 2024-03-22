@@ -47,7 +47,14 @@ extension P256.KeyAgreement.PublicKey: CustomStringConvertible
 {
     public var description: String
     {
-        return self.compactRepresentation!.base64EncodedString()
+        if let compactRepresentation = self.compactRepresentation
+        {
+            return compactRepresentation.base64EncodedString()
+        }
+        else
+        {
+            return self.rawRepresentation.base64EncodedString()
+        }
     }
 }
 
@@ -63,6 +70,13 @@ extension P256.Signing.PublicKey: CustomStringConvertible
 {
     public var description: String
     {
-        return self.compactRepresentation!.base64EncodedString()
+        if let compactRepresentation = self.compactRepresentation
+        {
+            return compactRepresentation.base64EncodedString()
+        }
+        else
+        {
+            return self.rawRepresentation.base64EncodedString()
+        }
     }
 }
